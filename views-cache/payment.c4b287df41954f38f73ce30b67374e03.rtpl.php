@@ -351,8 +351,7 @@
 <script>
     scripts.push(function () {
 
-        function showError(error)
-        {
+        function showError(error) {
             $("#alert-error span.msg").text(error);
             $("#alert-error").removeClass("hide");
         }
@@ -360,21 +359,21 @@
         PagSeguroDirectPayment.getPaymentMethods({
             amount: parseFloat("<?php echo htmlspecialchars( $order["vltotal"], ENT_COMPAT, 'UTF-8', FALSE ); ?>"),
             success: function (response) {
-                
+
                 var tplDebit = Handlebars.compile($("#tpl-payment-debit").html());
                 var tplCredit = Handlebars.compile($("#tpl-payment-credit").html());
 
-                $.each(response.paymentMethods.ONLINE_DEBIT.options, function(index, option){
-                    
+                $.each(response.paymentMethods.ONLINE_DEBIT.options, function (index, option) {
+
                     $("#tab-debito .contents").append(tplDebit({
                         value: option.name,
                         image: option.images.MEDIUM.path,
                         text: option.displayName
                     }));
                 });
-                
-                $.each(response.paymentMethods.CREDIT_CARD.options, function(index, option){
-                    
+
+                $.each(response.paymentMethods.CREDIT_CARD.options, function (index, option) {
+
                     $("#tab-credito .contents").append(tplCredit({
                         name: option.name,
                         image: option.images.MEDIUM.path
@@ -392,8 +391,7 @@
 
                 var errors = [];
 
-                for (var code in response.errors)
-                {
+                for (var code in response.errors) {
                     errors.push(response.errors[code]);
                 }
 
@@ -403,5 +401,34 @@
 
             }
         });
+
+        $("#number_field").on("change", function () {
+
+            var value = $(this).val();
+
+            if (value.length >= 6) {
+
+                PagSeguroDirectPayment.getBrand({
+                    cardBin: value.substring(0, 6),
+                    success: function (response) {
+                        console.log(response);
+                    },
+                    error: function (response) {
+                        var errors = [];
+                        for (var code in response.errors)
+                        {
+                            errors.push(response.errors[code]);
+                        }
+
+                        showError(errors.toString());
+                    },
+                    complete: function (response) {
+                        //tratamento para todas as chamadas
+                    }
+                });
+            }
+
+        })
+
     });
 </script>
