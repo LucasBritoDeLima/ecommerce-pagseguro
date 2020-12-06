@@ -21,9 +21,7 @@ $app->get('/payment', function(){
         array_push($years, $y);
     }
 
-    $page = new Page([
-        "footer"=>false
-    ]);
+    $page = new Page();
 
     $page->setTpl("payment", [ //$page->setTple
         "order"=>$order->getValues(),
