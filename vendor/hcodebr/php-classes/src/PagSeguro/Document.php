@@ -6,7 +6,7 @@ use DOMDocument;
 use DOMElement;
 use Exception;
 
-class Sender
+class Document
 {
     private $type;
     private $value;
@@ -27,11 +27,11 @@ class Sender
                 break;
         }
 
-        $this->type;
+        $this->type = $type;
         $this->value = $value;
     }
 
-    public static function isValidCPF($number):boolean
+    public static function isValidCPF($number):bool
     {
     
         $number = preg_replace('/[^0-9]/', '', (string) $number);
