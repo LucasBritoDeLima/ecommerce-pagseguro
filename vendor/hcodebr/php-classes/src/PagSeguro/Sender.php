@@ -50,7 +50,7 @@ class Sender
         $sender = $dom->createElement("sender");
         $sender = $dom->appendChild($sender);
 
-        $name = $dom->createElement("name", $this->cpf);
+        $name = $dom->createElement("name", $this->name);
         $name = $sender->appendChild($name);
 
         $email = $dom->createElement("email", $this->email);

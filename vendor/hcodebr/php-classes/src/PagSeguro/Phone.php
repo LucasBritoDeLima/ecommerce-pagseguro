@@ -3,42 +3,52 @@
 namespace Hcode\PagSeguro;
 
 use Exception;
-use DOMElement;
 use DOMDocument;
+use DOMElement;
 
-class Phone
-{
-    private $areaCode;
-    private $number;
+class Phone {
 
-    public function __construct(int $areaCode, int $number)
-    {
-        if (!$areaCode || $areaCode < 11 || $areaCode > 99) {
-            throw new Exception("Informe o DDD do telefone");
-        }
+	private $areaCode;
+	private $number;
 
-        if (!strlen($areaCode) || strlen($areaCode) < 8 || strlen($areaCode) > 9) {
-            throw new Exception("Informe o número do telefone");
-        }
+	public function __construct(int $areaCode, int $number)
+	{
 
-        $this->areaCode = $areaCode;
-        $this->number = $number;
-    }
+		if (!$areaCode || $areaCode < 11 || $areaCode > 99)
+		{
 
-    public function getDOMElement():DOMElement {
+			throw new Exception("Informe o DDD do telefone.");
 
-        $dom = new DOMDocument();
+		}
 
-        $phone = $dom->createElement("phone");
-        $phone = $dom->appendChild($phone);
+		if (!$number || strlen($number) < 8 || strlen($number) > 9)
+		{
+			
+			throw new Exception("Informe o número do telefone.");
 
-        $areaCode = $dom->createElement("areaCode", $this->areaCode);
-        $areaCode = $phone->appendChild($areaCode);
+		}
 
-        $value = $dom->createElement("value", $this->value);
-        $value = $phone->appendChild($value);
+		$this->areaCode = $areaCode;
+		$this->number = $number;
 
-        return $phone;
+	}
 
-    }
+	public function getDOMElement():DOMElement
+	{
+	
+		$dom = new DOMDocument();
+
+		$phone = $dom->createElement("phone");
+		$phone = $dom->appendChild($phone);
+
+		$areaCode = $dom->createElement("areaCode", $this->areaCode);
+		$areaCode = $phone->appendChild($areaCode);
+
+		$number = $dom->createElement("number", $this->number);
+		$number = $phone->appendChild($number);
+
+		return $phone;
+
+	}
+
 }

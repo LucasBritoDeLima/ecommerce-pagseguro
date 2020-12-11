@@ -38,7 +38,7 @@ class Holder
         $holder = $dom->createElement("holder");
         $holder = $dom->appendChild($holder);
 
-        $name = $dom->createElement("name", $this->cpf);
+        $name = $dom->createElement("name", $this->name);
         $name = $holder->appendChild($name);
 
         $birthDate = $dom->createElement("birthDate", $this->birthDate->format('d/m/Y'));
