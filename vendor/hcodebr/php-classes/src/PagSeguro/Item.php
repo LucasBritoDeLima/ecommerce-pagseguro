@@ -51,6 +51,9 @@ class Item
         $id = $dom->createElement("id", $this->id);
         $id = $item->appendChild($id);
 
+        $id = $dom->createElement("id", $this->id);
+        $id = $item->appendChild($id);
+
         $quantity = $dom->createElement("quantity", $this->quantity);
         $quantity = $item->appendChild($quantity);
 
