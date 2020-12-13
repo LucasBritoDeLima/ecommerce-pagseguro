@@ -16,6 +16,23 @@ use Hcode\PagSeguro\Item;
 use Hcode\PagSeguro\Payment;
 use Hcode\PagSeguro\Shipping;
 
+$app->get('/payment/success', function(){
+   
+        User::verifyLogin(false);
+
+        $order = new Order();
+
+        $order->getFromSession();
+
+        $page = new Page();
+
+        $page->setTpl('payment-success', [
+            'order'=>$order->getValues()
+        ]);
+
+});
+
+
 $app->post('/payment/credit', function () {
 
     User::verifyLogin(false);
