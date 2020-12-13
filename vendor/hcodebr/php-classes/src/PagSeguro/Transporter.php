@@ -4,6 +4,7 @@ namespace Hcode\PagSeguro;
 
 use GuzzleHttp\Client;
 use Hcode\Model\Order;
+use Exception;
 
 class Transporter
 {
@@ -28,10 +29,10 @@ class Transporter
 
         $res = $client->request('POST', Config::getUrlTransaction() . "?" . http_build_query(Config::getAuthentication()), [
             'verify' => false,
-            'headers' =>[
-                'Content-Type'=>'application/xml'
+            'headers' => [
+                'Content-Type' => 'application/xml'
             ],
-            'body'=>$payment->getDOMDocument()->saveXML()
+            'body' => $payment->getDOMDocument()->saveXML()
         ]);
 
         $xml = simplexml_load_string($res->getBody()->getContents());
@@ -51,6 +52,51 @@ class Transporter
         );
 
         return $xml;
+    }
 
+    public static function getNotification(string $code, string $type)
+    {
+
+        $url = "";
+
+        switch ($type) {
+            case 'transaction':
+                $url = Config::getNotificationTransactionURL();
+                break;
+
+            default:
+                throw new Exception("Notificação inválida.");
+                break;
+        }
+
+        $client = new Client();
+
+        $res = $client->request('GET', $url . $code .  "?" . http_build_query(Config::getAuthentication()), [
+            'verify' => false
+        ]);
+
+        $xml = simplexml_load_string($res->getBody()->getContents());
+
+        $order = new Order();
+        
+        $order->get((int)$xml->reference);
+
+        if ($order->getidstatus() !== (int)$xml->status){
+            $order->setidstatus((int)$xml->status);
+
+            $order->save();
+        }
+
+
+        $filename = $_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "res" . DIRECTORY_SEPARATOR . "logs" . DIRECTORY_SEPARATOR . date("YmdHis") . ".json";
+
+        $file = fopen($filename, "a+");
+        fwrite($file, json_encode([
+            'post'=>$_POST,
+            'xml'=>$xml
+        ]));
+        fclose($file);
+
+        return $xml;
     }
 }
