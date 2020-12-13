@@ -404,10 +404,10 @@
             }
         });
 
-        $("#installments_field").on("change", function() {
-            
+        $("#installments_field").on("change", function () {
+
             var installment = $(this).find("option:selected").data("installment");
-            
+
             console.log(installment);
 
             $("[name=installments_qtd]").val(installment.quantity);
@@ -543,6 +543,43 @@
             return true
         }
 
+        $("#form-boleto").on("submit", function (e) {
+
+            e.preventDefault();
+
+            if (!isValidCPF($("#form-boleto [name=cpf]").val())) {
+                showError("Este número de CPF não é válido.");
+                return false;
+            }
+
+            var formData = $(this).serializeArray();
+
+            var params = {};
+
+            $.each(formData, function (index, field) {
+                params[field.name] = field.value;
+            });
+
+            params.hash = PagSeguroDirectPayment.getSenderHash();
+
+            $.post(
+                "/payment/boleto",
+                $.param(params),
+                function (r) {
+
+                    var response = JSON.parse(r);
+
+                    if (response.success) {
+                        window.location.href = "/payment/success/boleto";
+                    } else {
+                        showError("Não foi possível efetuar o pagamento.");
+                    }
+                }
+            );
+
+        });
+
+
         $("#form-credit").on("submit", function (e) {
 
             e.preventDefault();
@@ -576,7 +613,7 @@
                     $.post(
                         "/payment/credit",
                         $.param(params),
-                        function(r){
+                        function (r) {
 
                             var response = JSON.parse(r);
 
